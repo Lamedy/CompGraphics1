@@ -20,19 +20,17 @@
         }
 
         // Проецирование объекта на экран с помощью кабинетной проекции
-        public float[,] proectionObjectOnScreen(float[,] matrix, float proectionTick = 1)
+        public float[,] proectionObjectOnScreen(float[,] matrix, float proectionTick = 0)
         {
             double alpha = 45;
-            float centerAxisOnScreenByX = 500;
-            float centerAxisOnScreenByY = 550;
             return multiplyMatrix(
                 matrix, 
                 new float[,]
                 {
                     { 1, 0, 0, 0},
                     { 0, -1, 0, 0},
-                    { -(float)(Math.Cos(alpha))/2 * proectionTick, (float)(Math.Sin(alpha))/2 * proectionTick, 1, 0},
-                    { centerAxisOnScreenByX, centerAxisOnScreenByY, 0, 1}
+                    { -(float)(Math.Cos(alpha))/2 * (1-proectionTick), (float)(Math.Sin(alpha))/2 * (1-proectionTick), 1, -1f/600f * proectionTick},
+                    { 0, 0, 1, 1}
                 }
             );
         }

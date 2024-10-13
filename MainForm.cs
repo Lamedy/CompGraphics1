@@ -6,7 +6,9 @@ namespace Lab1_program
         private ObjectTransformation transformator = new ObjectTransformation();
         private MyObject myObject;
         private bool proection = true;
-        private float changeProectionTick = 1;
+        private float changeProectionTick = 0;
+        private float centerAxisOnScreenByX = 500;
+        private float centerAxisOnScreenByY = 550;
         public MainForm()
         {
             InitializeComponent();
@@ -42,8 +44,15 @@ namespace Lab1_program
                 {0, 10, 490, 1},
                 {0, -10, 490, 1}
             };
-
+            
             coordinateAxes = this.transformator.proectionObjectOnScreen(coordinateAxes, changeProectionTick);
+            for (int i = 0; i < coordinateAxes.GetLength(0); i++)
+            {
+                coordinateAxes[i, 0] /= coordinateAxes[i, 3];
+                coordinateAxes[i, 1] /= coordinateAxes[i, 3];
+                coordinateAxes[i, 0] += this.centerAxisOnScreenByX;
+                coordinateAxes[i, 1] += this.centerAxisOnScreenByY;
+            }
             // Îñü X
             this._graphics.DrawLine(new Pen(Color.Red, 3f), coordinateAxes[0, 0], coordinateAxes[0, 1], coordinateAxes[1, 0], coordinateAxes[1, 1]);
             this._graphics.DrawLine(new Pen(Color.Red, 3f), coordinateAxes[1, 0], coordinateAxes[1, 1], coordinateAxes[4, 0], coordinateAxes[4, 1]);
@@ -65,17 +74,17 @@ namespace Lab1_program
                 this.myObject = new MyObject();
                 this.myObject.verticesList = this.transformator.dilatationObject(this.myObject.verticesList, 30f);
             }
-
             float[,] proectionObjectVertices = this.transformator.proectionObjectOnScreen(this.myObject.verticesList, changeProectionTick);
+
 
             for (int i = 0; i < this.myObject.edgesList.Count; i++)
             {
                 this._graphics.DrawLine(
                     Pens.Black,
-                    proectionObjectVertices[this.myObject.edgesList[i][0], 0],  // x1
-                    proectionObjectVertices[this.myObject.edgesList[i][0], 1],  // y1
-                    proectionObjectVertices[this.myObject.edgesList[i][1], 0],  // x2
-                    proectionObjectVertices[this.myObject.edgesList[i][1], 1]   // y2
+                    this.centerAxisOnScreenByX + proectionObjectVertices[this.myObject.edgesList[i][0], 0] / proectionObjectVertices[this.myObject.edgesList[i][0], 3],  // x1
+                    this.centerAxisOnScreenByY + proectionObjectVertices[this.myObject.edgesList[i][0], 1] / proectionObjectVertices[this.myObject.edgesList[i][0], 3],  // y1
+                    this.centerAxisOnScreenByX + proectionObjectVertices[this.myObject.edgesList[i][1], 0] / proectionObjectVertices[this.myObject.edgesList[i][1], 3],  // x2
+                    this.centerAxisOnScreenByY + proectionObjectVertices[this.myObject.edgesList[i][1], 1] / proectionObjectVertices[this.myObject.edgesList[i][1], 3]   // y2
                 );
             }
         }
@@ -212,11 +221,11 @@ namespace Lab1_program
             {
                 if (this.proection)
                 {
-                    this.changeProectionTick -= 0.05f;
+                    this.changeProectionTick += 0.05f;
                 }
                 else
                 {
-                    this.changeProectionTick += 0.05f;
+                    this.changeProectionTick -= 0.05f;
                 }
                 this.Refresh();
             }
